@@ -1,0 +1,42 @@
+[
+  {
+    "reference": "The quick brown fox jumps over the lazy dog",
+    "prediction": "The quick brown fox jumped over the lazy dog"
+  },
+  {
+    "reference": "Hello world how are you today",
+    "prediction": "Hello world how are you"
+  },
+  {
+    "reference": "Machine learning is fascinating",
+    "prediction": "Machine learning are fascinating"
+  },
+  {
+    "reference": "Speech recognition technology",
+    "prediction": "Speech recognition technologie"
+  },
+  {
+    "reference": "Natural language processing",
+    "prediction": "Natural language processing"
+  },
+  {
+    "reference": "Artificial intelligence research",
+    "prediction": "Artificial intelligent research"
+  },
+  {
+    "reference": "Deep learning algorithms",
+    "prediction": "Deep learning algoritms"
+  },
+  {
+    "reference": "Computer vision applications",
+    "prediction": "Computer vision application"
+  },
+  {
+    "reference": "Data science methodology",
+    "prediction": "Data science methods"
+  },
+  {
+    "reference": "Python programming language",
+    "prediction": "Python programing language"
+  }
+]
