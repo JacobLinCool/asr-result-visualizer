@@ -28,6 +28,7 @@
 
 	let showResults = $state(false);
 	let error = $state('');
+	let showCompactView = $state(false);
 
 	async function handleFileUpload() {
 		if (!files || files.length === 0) return;
@@ -163,6 +164,24 @@
 				const word = isReference ? item.reference : item.prediction;
 				const position = isReference ? item.referencePosition : item.predictionPosition;
 				return renderAlignmentWord(word, item.type, isReference, position);
+			})
+			.filter((w) => w)
+			.join(' ');
+	}
+
+	function renderCompactAlignment(alignment: AlignmentResult[]): string {
+		return alignment
+			.map((item) => {
+				if (item.type === 'correct') {
+					return item.reference;
+				} else if (item.type === 'substitution') {
+					return `<span class="bg-yellow-200 text-yellow-800 px-1 rounded tooltip" data-tip="Substitution">${item.reference}->${item.prediction}</span>`;
+				} else if (item.type === 'deletion') {
+					return `<span class="bg-red-200 text-red-800 px-1 rounded tooltip" data-tip="Deletion">${item.reference}</span>`;
+				} else if (item.type === 'insertion') {
+					return `<span class="bg-green-200 text-green-800 px-1 rounded tooltip" data-tip="Insertion">${item.prediction}</span>`;
+				}
+				return '';
 			})
 			.filter((w) => w)
 			.join(' ');
@@ -383,14 +402,24 @@ Ensure that each row corresponds to a single sample.</pre>
 		<!-- Detailed Results Table -->
 		<div class="card bg-base-100 shadow-xl">
 			<div class="card-body">
-				<h3 class="card-title">Detailed Analysis</h3>
+				<div class="mb-4 flex items-center justify-between">
+					<h3 class="card-title">Detailed Analysis</h3>
+					<label class="label cursor-pointer">
+						<span class="label-text mr-2">Compact view</span>
+						<input type="checkbox" class="toggle toggle-primary" bind:checked={showCompactView} />
+					</label>
+				</div>
 				<div class="overflow-x-auto">
 					<table class="table table-zebra">
 						<thead>
 							<tr>
 								<th class="w-12">#</th>
-								<th class="w-96">Reference</th>
-								<th class="w-96">Prediction</th>
+								{#if showCompactView}
+									<th class="w-full">Alignment</th>
+								{:else}
+									<th class="w-96">Reference</th>
+									<th class="w-96">Prediction</th>
+								{/if}
 								<th class="w-20">WER</th>
 								<th class="w-20">Sub%</th>
 								<th class="w-20">Ins%</th>
@@ -401,12 +430,18 @@ Ensure that each row corresponds to a single sample.</pre>
 							{#each results as result, i}
 								<tr>
 									<td>{i + 1}</td>
-									<td class="font-mono break-words">
-										{@html renderAlignment(result.alignment, true)}
-									</td>
-									<td class="font-mono break-words">
-										{@html renderAlignment(result.alignment, false)}
-									</td>
+									{#if showCompactView}
+										<td class="font-mono break-words">
+											{@html renderCompactAlignment(result.alignment)}
+										</td>
+									{:else}
+										<td class="font-mono break-words">
+											{@html renderAlignment(result.alignment, true)}
+										</td>
+										<td class="font-mono break-words">
+											{@html renderAlignment(result.alignment, false)}
+										</td>
+									{/if}
 									<td>{formatPercentage(result.wer)}</td>
 									<td>{formatPercentage(result.substitutionRate)}</td>
 									<td>{formatPercentage(result.insertionRate)}</td>
